@@ -1,0 +1,70 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.80'
+    id 'idea'
+}
+
+version = mod_version
+group = mod_group_id
+
+repositories {
+    mavenLocal()
+    flatDir { dirs 'libs' }
+}
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = project.neo_version
+
+    runs {
+        client {
+            client()
+        }
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.INFO
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+dependencies {
+    // Cobblemon is provided at runtime by the modpack; we only need its symbols at compile time.
+    // Drop the Cobblemon jar into libs/ before building. (See README in this directory.)
+    compileOnly fileTree(dir: 'libs', include: ['Cobblemon-*.jar'])
+    // Kotlin stdlib + Kotlin for Forge are provided by Cobblemon's dep chain at runtime.
+}
+
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            mod_id          : mod_id,
+            mod_name        : mod_name,
+            mod_license     : mod_license,
+            mod_version     : mod_version,
+            mod_authors     : mod_authors,
+            mod_description : mod_description,
+            neo_version_range: neo_version_range,
+            loader_version_range: loader_version_range,
+            minecraft_version_range: minecraft_version_range,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

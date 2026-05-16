@@ -1,0 +1,4 @@
+.gradle/
+build/
+libs/Cobblemon-*.jar
+!libs/.gitkeep
