@@ -14,8 +14,10 @@ public final class HermeticCodexTweaks {
     public static final Logger LOGGER = LoggerFactory.getLogger("HermeticCodexTweaks");
 
     public HermeticCodexTweaks(IEventBus modEventBus, ModContainer modContainer) {
-        // Register client-only config.
-        modContainer.registerConfig(ModConfig.Type.CLIENT, TweaksConfig.SPEC);
+        // Client-only config (Cobblemon party HUD offset).
+        modContainer.registerConfig(ModConfig.Type.CLIENT, TweaksConfig.CLIENT_SPEC);
+        // Server config (autosave interval) — lives in config/ on a dedicated server.
+        modContainer.registerConfig(ModConfig.Type.SERVER, TweaksConfig.SERVER_SPEC);
         LOGGER.info("Hermetic Codex Tweaks loaded.");
     }
 }

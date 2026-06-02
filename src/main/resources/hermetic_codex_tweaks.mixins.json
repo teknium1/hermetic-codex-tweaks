@@ -3,6 +3,9 @@
   "package": "net.teknium.hermeticcodex.tweaks.mixin",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
+  "mixins": [
+    "AutosaveIntervalMixin"
+  ],
   "client": [
     "PartyOverlayMixin"
   ],
